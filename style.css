@@ -1,0 +1,20 @@
+.libCards {
+	border: 1px solid black;
+	display: flex;
+	height: 100%;
+	background-color: green;
+	margin-bottom: 10px;
+}
+
+.bookCard {
+	border: 1px solid black;
+	display: flex;
+	flex-direction: column;
+	background-color: white;
+	padding: 50px;
+	
+}
+
+li {
+	list-style: none;
+}
