@@ -8,6 +8,39 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div class="libCards"></div>
-	<button class="addLibBtn">Add book to library</button>
+	<div class="sidebar">
+		<form action="">
+			<legend>Add new book:</legend>
+			<div>
+				<label for="title">
+					<span>Title</span>
+					<span aria-label="required">*</span>
+				</label>
+				<input type="text" id="title" required>
+			</div>
+			<div>
+				<label for="author">
+					<span>Author</span>
+					<span aria-label="required">*</span>
+				</label>
+				<input type="text" id="author" required>
+			</div>
+			<div>
+				<label for="pages">
+					<span>Number of pages</span>
+					<span aria-label="required">*</span>
+				</label>
+				<input type="text" id="pages" required>
+			</div>
+			<div>
+				<label for="read">
+					<span>Has been read? (y/n)</span>
+					<span aria-label="required">*</span>
+				</label>
+				<input type="text" id="read" required>
+			</div>
+		</form>
+		<button type="submit" class="addLibBtn">Submit</button>
+	</div>
+	<div class="libraryContainer"></div>
 </body>

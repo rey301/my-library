@@ -1,18 +1,33 @@
-.libCards {
-	border: 1px solid black;
+body {
+	display: flex;
+	padding: 0;
+	margin: 0;
+	height: 100vh;
+}
+
+.sidebar {
+	background-color: #FCD34D;
+	flex-basis: 300px;
+}
+
+.libraryContainer {
 	display: flex;
 	height: 100%;
-	background-color: green;
+	width: 100%;
+	background-color: #FFF9EE;
 	margin-bottom: 10px;
+
 }
 
 .bookCard {
 	border: 1px solid black;
 	display: flex;
+	height: 150px;
 	flex-direction: column;
 	background-color: white;
 	padding: 50px;
-	
+
+	margin: 50px;
 }
 
 li {

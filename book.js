@@ -15,13 +15,16 @@ function Book(title, author, pages, read) {
 	};
 }
 
-function addBookToLibrary() {
-	let title = prompt('Book title:');
-	let author = prompt('Author:');
-	let pages = prompt('Number of pages:');
-	let read = prompt('Has been read? (y/n)');
+function addBookToLibrary(event) {
+	event.preventDefault();
 
-	myLibrary.push(new Book(title, author, pages, read));
+	const title = document.querySelector('#title');
+	const author = document.querySelector('#author');
+	const pages = document.querySelector('#pages');
+	const read = document.querySelector('#read');
+
+
+	myLibrary.push(new Book(title.value, author.value, pages.value, read.value));
 	updateLibraryCards(myLibrary[myLibrary.length-1]);
 }
 
@@ -39,18 +42,19 @@ function updateLibraryCards(book) {
 	bookCard.appendChild(createCardItem(book.pages + ' pages'));
 	bookCard.appendChild(createCardItem(book.readMsg));
 
-	libCards.appendChild(bookCard);
+	libraryContainer.appendChild(bookCard);
 }
 
 const myLibrary = [];
 
 const libBtn = document.querySelector('.addLibBtn');
-libBtn.addEventListener('click', addBookToLibrary);
+libBtn.addEventListener('click', event => addBookToLibrary(event));
+
 
 const theHobbit = new Book('The Hobbit', 'J.R.R. Tolkien', '295', false);
 myLibrary.push(theHobbit);
 
-const libCards = document.querySelector('.libCards');
+const libraryContainer = document.querySelector('.libraryContainer');
 
 myLibrary.forEach((book) => {
 	updateLibraryCards(book);
