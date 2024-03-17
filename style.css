@@ -12,6 +12,7 @@ body {
 
 .libraryContainer {
 	display: flex;
+	flex-wrap: wrap;
 	height: 100%;
 	width: 100%;
 	background-color: #FFF9EE;
@@ -21,14 +22,29 @@ body {
 
 .bookCard {
 	border: 1px solid black;
-	display: flex;
-	height: 150px;
-	flex-direction: column;
 	background-color: white;
-	padding: 50px;
-
 	margin: 50px;
+	height: 200px;
+	padding: 10px;
 }
+
+.bookCard:not(.closeIcon) {
+	display: flex;
+
+}
+
+.closeIcon {
+	position: absolute;
+	height: 20px;
+}
+
+.bookInfo {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
 
 li {
 	list-style: none;
