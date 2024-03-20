@@ -3,11 +3,12 @@ function Book(title, author, pages, read) {
 	this.author = author;
 	this.pages = pages;
 	this.read = read;
+	this.readMsg = '';
 
 	if (read) {
 		this.readMsg = 'Has been read';
 	} else {
-		this.readMsg = 'Not read yet';
+		this.readMsg = 'Has not been read';
 	}
 
 	this.info = () => {
@@ -28,10 +29,28 @@ function addBookToLibrary(event) {
 	updateLibraryCards(myLibrary[myLibrary.length-1], myLibrary.length-1);
 }
 
-function createCardItem(name) {
+function createCardItem(name, id) {
 	let li = document.createElement('li');
 	li.textContent = name;
+	li.id = id;
 	return li;
+}
+
+function checkRead() {
+	let checkBox = document.getElementById('checkbox-'+id);
+	let currRead = document.getElementById('read-' + id);
+	console.log(currRead);
+	console.log(currCheckBox);
+
+
+	if (currCheckBox.checked) {
+		myLibrary[id].read = true;
+		console.log(currCheckBox);
+		currRead.textContent = '';
+		
+	} else {
+		myLibrary[id].read = false; 
+	}
 }
 
 function updateLibraryCards(book, id) {
@@ -41,17 +60,36 @@ function updateLibraryCards(book, id) {
 
 	closeIcon.src = './svgs/close.svg';
 	closeIcon.className = 'closeIcon';
-	
 
 	bookInfo.className = 'bookInfo';
-	
-	bookInfo.appendChild(createCardItem(book.title));
-	bookInfo.appendChild(createCardItem(book.author));
-	bookInfo.appendChild(createCardItem(book.pages + ' pages'));
-	bookInfo.appendChild(createCardItem(book.readMsg));
-	
+	bookInfo.appendChild(createCardItem(book.title, 'title-' + id));
+	bookInfo.appendChild(createCardItem(book.author, 'author-' + id));
+	bookInfo.appendChild(createCardItem(book.pages + ' pages', 'pages-'+id));
+	bookInfo.appendChild(createCardItem(book.readMsg, 'read-'+id));
+
+	// checkbox
+	let readSwitch = document.createElement('label');
+	let inputCheckBox = document.createElement('input');
+	inputCheckBox.type = 'checkbox';
+	inputCheckBox.id = 'checkbox-' + id;
+
+	let switchBtn = document.createElement('div');
+	switchBtn.className = 'switch-btn';
+
+	readSwitch.className = 'switch';
+
+	// tick checkbox if book has been read
+	if (book.read) {
+		inputCheckBox.checked = true;
+	} 
+
+	readSwitch.appendChild(inputCheckBox);
+	readSwitch.appendChild(switchBtn);
+
+	bookInfo.appendChild(readSwitch);
+
 	bookCard.className = 'bookCard';
-	bookCard.id = id;
+	bookCard.id = 'book-'+ id;
 	bookCard.appendChild(closeIcon);
 	bookCard.appendChild(bookInfo);
 
@@ -59,8 +97,18 @@ function updateLibraryCards(book, id) {
 
 	closeIcon.addEventListener('click', () => {
 		myLibrary.splice(closeIcon.parentNode.id, 1);
-		console.log(myLibrary);
 		closeIcon.parentNode.remove();
+	});
+
+	inputCheckBox.addEventListener('change', function() {
+		let readMsg = document.getElementById('read-' + id);
+		if(this.checked) {
+			book.read = true;
+			readMsg.textContent = 'Has been read';
+		} else {
+			book.read = false;
+			readMsg.textContent = 'Has not been read';
+		}
 	});
 }
 
