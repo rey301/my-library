@@ -37,15 +37,10 @@ function createCardItem(name, id) {
 }
 
 function checkRead() {
-	let checkBox = document.getElementById('checkbox-'+id);
 	let currRead = document.getElementById('read-' + id);
-	console.log(currRead);
-	console.log(currCheckBox);
-
 
 	if (currCheckBox.checked) {
 		myLibrary[id].read = true;
-		console.log(currCheckBox);
 		currRead.textContent = '';
 		
 	} else {
@@ -53,21 +48,21 @@ function checkRead() {
 	}
 }
 
-function updateLibraryCards(book, id) {
-	let bookCard = document.createElement('div');
-	let bookInfo = document.createElement('div');
+function addNewBook(book, id) {
+	// close icon
 	let closeIcon = document.createElement('img');
-
 	closeIcon.src = './svgs/close.svg';
 	closeIcon.className = 'closeIcon';
 
+	// book information
+	let bookInfo = document.createElement('div');
 	bookInfo.className = 'bookInfo';
 	bookInfo.appendChild(createCardItem(book.title, 'title-' + id));
 	bookInfo.appendChild(createCardItem(book.author, 'author-' + id));
 	bookInfo.appendChild(createCardItem(book.pages + ' pages', 'pages-'+id));
 	bookInfo.appendChild(createCardItem(book.readMsg, 'read-'+id));
 
-	// checkbox
+	// checkbox to check if book has been read
 	let readSwitch = document.createElement('label');
 	let inputCheckBox = document.createElement('input');
 	inputCheckBox.type = 'checkbox';
@@ -88,12 +83,43 @@ function updateLibraryCards(book, id) {
 
 	bookInfo.appendChild(readSwitch);
 
-	bookCard.className = 'bookCard';
+	// book card
+	let bookCard = document.createElement('div');
+
+	bookCard.className = 'book card';
 	bookCard.id = 'book-'+ id;
 	bookCard.appendChild(closeIcon);
 	bookCard.appendChild(bookInfo);
 
+	// add to library container
+	const libraryContainer = document.querySelector('.libraryContainer');
+	
+	// button to add a new book
+	let addBtn = document.createElement('img');
+	addBtn.src = './svgs/plus.svg';
+
+	let addCard = document.createElement('div');
+	addCard.id = 'addCard';
+
+	addCard.appendChild(addBtn);
+
+	// when clicked create a new form within a card
+	addBtn.addEventListener('click', function() {
+		document.getElementById('addCard').remove();
+		let formCard = createFormCard();
+		libraryContainer.appendChild(formCard);
+		libraryContainer.appendChild(addCard);
+	});
+
 	libraryContainer.appendChild(bookCard);
+
+	// remove last add button
+	if (document.getElementById('addCard')) {
+		document.getElementById('addCard').remove();
+	}
+
+	// add a new add button
+	libraryContainer.appendChild(addCard);
 
 	closeIcon.addEventListener('click', () => {
 		myLibrary.splice(closeIcon.parentNode.id, 1);
@@ -112,20 +138,56 @@ function updateLibraryCards(book, id) {
 	});
 }
 
+// create a new card and allow user to edit contents then save
+function createFormCard() {
+
+	let formCard = document.createElement('div');
+	formCard.className = 'card ' + myLibrary.length;
+
+	//create form
+	let form = document.createElement('form');
+	
+	let legend = document.createElement('legend');
+	legend.textContent = 'Add new book:';
+
+	form.appendChild(legend);
+	
+	let titleLabel = document.createElement('label');
+	titleLabel.setAttribute('for', 'title');
+
+	let titleSpan = document.createElement('span');
+	titleSpan.textContent = 'Title';
+	titleLabel.appendChild(titleSpan);
+
+	let titleRequired = document.createElement('span');
+	titleRequired.setAttribute('aria-label', 'required');
+	titleRequired.textContent = '*';
+	titleLabel.appendChild(titleRequired);
+
+	let titleDiv = document.createElement('div');
+	titleDiv.appendChild(titleLabel);
+
+	let titleInput = document.createElement('input');
+	titleInput.setAttribute('type', 'text');
+	titleInput.id = 'title';
+	titleDiv.appendChild(titleInput);
+
+	form.appendChild(titleDiv);
+
+	formCard.appendChild(form);
+
+	return formCard;
+}
+
 const myLibrary = [];
-
-const libBtn = document.querySelector('.addLibBtn');
-libBtn.addEventListener('click', addBookToLibrary);
-
-
+// dummy book
 const theHobbit = new Book('The Hobbit', 'J.R.R. Tolkien', '295', false);
 myLibrary.push(theHobbit);
+addNewBook(myLibrary[myLibrary.length-1], myLibrary.length-1);
 
-const libraryContainer = document.querySelector('.libraryContainer');
+let lastBookId = myLibrary.length-1;
+let lastBook = document.getElementById(lastBookId);
 
-for (let i=0; i<myLibrary.length; i++) {
-	updateLibraryCards(myLibrary[i], [i]);
-}
 
 
 
