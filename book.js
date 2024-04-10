@@ -26,7 +26,7 @@ function addBookToLibrary(event) {
 
 
 	myLibrary.push(new Book(title.value, author.value, pages.value, read.value));
-	updateLibraryCards(myLibrary[myLibrary.length-1], myLibrary.length-1);
+	addNewBook(myLibrary[myLibrary.length-1], myLibrary.length-1);
 }
 
 function createCardItem(name, id) {
@@ -95,16 +95,16 @@ function addNewBook(book, id) {
 	const libraryContainer = document.querySelector('.libraryContainer');
 	
 	// button to add a new book
-	let addBtn = document.createElement('img');
-	addBtn.src = './svgs/plus.svg';
+	let addIcon = document.createElement('img');
+	addIcon.src = './svgs/plus.svg';
 
 	let addCard = document.createElement('div');
 	addCard.id = 'addCard';
 
-	addCard.appendChild(addBtn);
+	addCard.appendChild(addIcon);
 
 	// when clicked create a new form within a card
-	addBtn.addEventListener('click', function() {
+	addCard.addEventListener('click', function() {
 		document.getElementById('addCard').remove();
 		let formCard = createFormCard();
 		libraryContainer.appendChild(formCard);
@@ -152,6 +152,7 @@ function createFormCard() {
 
 	form.appendChild(legend);
 	
+	//title
 	let titleLabel = document.createElement('label');
 	titleLabel.setAttribute('for', 'title');
 
@@ -173,6 +174,85 @@ function createFormCard() {
 	titleDiv.appendChild(titleInput);
 
 	form.appendChild(titleDiv);
+
+	// author
+	let authorLabel = document.createElement('label');
+	authorLabel.setAttribute('for', 'author');
+
+	let authorSpan = document.createElement('span');
+	authorSpan.textContent = 'Author';
+	authorLabel.appendChild(authorSpan);
+
+	let authorRequired = document.createElement('span');
+	authorRequired.setAttribute('aria-label', 'required');
+	authorRequired.textContent = '*';
+	authorLabel.appendChild(authorRequired);
+
+	let authorDiv = document.createElement('div');
+	authorDiv.appendChild(authorLabel);
+
+	let authorInput = document.createElement('input');
+	authorInput.setAttribute('type', 'text');
+	authorInput.id = 'author';
+	authorDiv.appendChild(authorInput);
+
+	form.appendChild(authorDiv);
+	
+	// pages
+	let pagesLabel = document.createElement('label');
+	pagesLabel.setAttribute('for', 'pages');
+
+	let pagesSpan = document.createElement('span');
+	pagesSpan.textContent = 'Number of pages';
+	pagesLabel.appendChild(pagesSpan);
+
+	let pagesRequired = document.createElement('span');
+	pagesRequired.setAttribute('aria-label', 'required');
+	pagesRequired.textContent = '*';
+	pagesLabel.appendChild(pagesRequired);
+
+	let pagesDiv = document.createElement('div');
+	pagesDiv.appendChild(pagesLabel);
+
+	let pagesInput = document.createElement('input');
+	pagesInput.setAttribute('type', 'text');
+	pagesInput.id = 'pages';
+	pagesDiv.appendChild(pagesInput);
+
+	form.appendChild(pagesDiv);
+
+	// read
+	let readLabel = document.createElement('label');
+	readLabel.setAttribute('for', 'read');
+
+	let readSpan = document.createElement('span');
+	readSpan.textContent = 'Has been read? (y/n)';
+	readLabel.appendChild(readSpan);
+
+	let readRequired = document.createElement('span');
+	readRequired.setAttribute('aria-label', 'required');
+	readRequired.textContent = '*';
+	readLabel.appendChild(readRequired);
+
+	let readDiv = document.createElement('div');
+	readDiv.appendChild(readLabel);
+
+	let readInput = document.createElement('input');
+	readInput.setAttribute('type', 'text');
+	readInput.id = 'read';
+	readDiv.appendChild(readInput);
+	
+	form.appendChild(readDiv);
+
+	//save button
+	let saveBtn = document.createElement('button');
+	saveBtn.setAttribute('type', 'submit');
+	saveBtn.className = 'addLibBtn';
+	saveBtn.textContent = 'save';
+
+	saveBtn.addEventListener('click', event => addBookToLibrary(event));
+
+	form.appendChild(saveBtn);
 
 	formCard.appendChild(form);
 

@@ -1,7 +1,4 @@
 body {
-	display: grid;
-	grid-template-columns: 1fr 4fr;
-	grid-template-rows: 1fr 8fr;
 	padding: 0;
 	margin: 0;
 	height: 100vh;
@@ -10,12 +7,23 @@ body {
 }
 
 header {
-	grid-column: span 2;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 20%;
+	background-color: #57534E;
 }
 
-.sidebar {
-	background-color: #FCD34D;
-	flex-basis: 300px;
+.logo {
+	height: 100px;
+
+}
+
+.title {
+	font-weight: 400;
+	font-size: 28px;
+	color: #FFF9EE;
 }
 
 .libraryContainer {
@@ -47,8 +55,6 @@ header {
 	padding: 10px;
 	display: flex;
 }
-
-
 
 .bookCard :not(.closeIcon) {
 	display: flex;
