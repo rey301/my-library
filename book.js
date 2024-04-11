@@ -105,11 +105,17 @@ function addNewBook(book, id) {
 
 	// when clicked create a new form within a card
 	addCard.addEventListener('click', function() {
-		document.getElementById('addCard').remove();
-		let formCard = createFormCard();
-		libraryContainer.appendChild(formCard);
-		libraryContainer.appendChild(addCard);
+		// check if a for is present, if so user must complete it before adding a new book
+		if (!document.getElementById('form')) {
+			document.getElementById('addCard').remove();
+			let formCard = createFormCard();
+			libraryContainer.appendChild(formCard);
+			libraryContainer.appendChild(addCard);
+		}
+		
 	});
+
+	
 
 	libraryContainer.appendChild(bookCard);
 
@@ -140,9 +146,9 @@ function addNewBook(book, id) {
 
 // create a new card and allow user to edit contents then save
 function createFormCard() {
-
 	let formCard = document.createElement('div');
 	formCard.className = 'card ' + myLibrary.length;
+	formCard.id = 'form';
 
 	//create form
 	let form = document.createElement('form');
@@ -250,7 +256,11 @@ function createFormCard() {
 	saveBtn.className = 'addLibBtn';
 	saveBtn.textContent = 'save';
 
-	saveBtn.addEventListener('click', event => addBookToLibrary(event));
+	saveBtn.addEventListener('click', event => {
+		addBookToLibrary(event);
+		const libraryContainer = document.querySelector('.libraryContainer');
+		libraryContainer.removeChild(formCard);
+	});
 
 	form.appendChild(saveBtn);
 
