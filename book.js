@@ -15,7 +15,7 @@ function Book(title, author, pages, read) {
 		console.log(`${this.title} by ${this.author}, ${this.pages} pages, ${this.readMsg}`);
 	};
 }
-
+// using the form values, add the new book to the library
 function addBookToLibrary(event) {
 	event.preventDefault();
 
@@ -29,11 +29,13 @@ function addBookToLibrary(event) {
 	addNewBook(myLibrary[myLibrary.length-1], myLibrary.length-1);
 }
 
-function createCardItem(name, id) {
-	let li = document.createElement('li');
-	li.textContent = name;
-	li.id = id;
-	return li;
+function createCardItem(name, id, className) {
+	let div = document.createElement('div');
+	div.textContent = name;
+	div.id= id;
+	div.className = className;
+	div.classList.add('info');
+	return div;
 }
 
 function checkRead() {
@@ -57,10 +59,10 @@ function addNewBook(book, id) {
 	// book information
 	let bookInfo = document.createElement('div');
 	bookInfo.className = 'bookInfo';
-	bookInfo.appendChild(createCardItem(book.title, 'title-' + id));
-	bookInfo.appendChild(createCardItem(book.author, 'author-' + id));
-	bookInfo.appendChild(createCardItem(book.pages + ' pages', 'pages-'+id));
-	bookInfo.appendChild(createCardItem(book.readMsg, 'read-'+id));
+
+	bookInfo.appendChild(createCardItem(book.author, 'author-' + id, 'author'));
+	bookInfo.appendChild(createCardItem(book.pages + ' pages', 'pages-'+id, 'pages'));
+	bookInfo.appendChild(createCardItem(book.readMsg, 'read-'+id, 'read'));
 
 	// checkbox to check if book has been read
 	let readSwitch = document.createElement('label');
@@ -89,6 +91,7 @@ function addNewBook(book, id) {
 	bookCard.className = 'book card';
 	bookCard.id = 'book-'+ id;
 	bookCard.appendChild(closeIcon);
+	bookCard.appendChild(createCardItem(book.title, 'title-' + id, 'title'));
 	bookCard.appendChild(bookInfo);
 
 	// add to library container
@@ -103,19 +106,16 @@ function addNewBook(book, id) {
 
 	addCard.appendChild(addIcon);
 
-	// when clicked create a new form within a card
+	// when clicked create a new book form within a card
 	addCard.addEventListener('click', function() {
-		// check if a for is present, if so user must complete it before adding a new book
+		// check if a form hasn't been saved, if so user must complete it before adding a new book
 		if (!document.getElementById('form')) {
 			document.getElementById('addCard').remove();
 			let formCard = createFormCard();
 			libraryContainer.appendChild(formCard);
 			libraryContainer.appendChild(addCard);
 		}
-		
 	});
-
-	
 
 	libraryContainer.appendChild(bookCard);
 
@@ -147,16 +147,13 @@ function addNewBook(book, id) {
 // create a new card and allow user to edit contents then save
 function createFormCard() {
 	let formCard = document.createElement('div');
-	formCard.className = 'card ' + myLibrary.length;
-	formCard.id = 'form';
+	formCard.className = 'form card';
 
 	//create form
 	let form = document.createElement('form');
+	form.id = 'form';
 	
-	let legend = document.createElement('legend');
-	legend.textContent = 'Add new book:';
-
-	form.appendChild(legend);
+	
 	
 	//title
 	let titleLabel = document.createElement('label');

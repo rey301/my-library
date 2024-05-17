@@ -20,7 +20,7 @@ header {
 
 }
 
-.title {
+.title:not(.info) {
 	font-weight: 400;
 	font-size: 28px;
 	color: #FFF9EE;
@@ -35,6 +35,12 @@ header {
 	background-color: #FFF9EE;
 	margin-bottom: 10px;
 	padding: 50px;
+}
+
+.titleCard {
+	font-weight: bold;
+	position: absolute;
+
 }
 
 #addCard {
@@ -53,26 +59,42 @@ header {
 	height: 200px;
 	width: 150px;
 	padding: 10px;
-	display: flex;
 }
 
-.bookCard :not(.closeIcon) {
+/* .bookCard :not(.closeIcon) {
 	display: flex;
 	justify-content: center;	
 	align-items: start;
+} */
+
+.book.card {
+	display: grid;
+	grid-template-columns: 1fr 8fr;
+	grid-template-rows: 1fr 8fr;
+}
+
+.title.info {
+	font-weight: bold;
+	color: black;
+
+	grid-column-start: 2;
+}
+
+.bookInfo {
+	grid-row-start: 2;
+	grid-column: 1 / span 2;
 }
 
 .closeIcon {
-	position: absolute;
 	height: 20px;
 }
-
+/* 
 .bookInfo {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-}
+} */
 
 input[type=checkbox] {
 	opacity: 0;
@@ -105,6 +127,10 @@ input[type=checkbox]:checked + .switch-btn:before {
 
 input[type=checkbox]:checked + .switch-btn {
 	background: rgb(55, 163, 55);
+}
+
+.form.card {
+	height:
 }
 
 li {
