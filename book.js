@@ -1,318 +1,170 @@
 class Book {
-	constructor (title, author, pages, read) {
-		this.title = title;
-		this.author = author;
-		this.pages = pages;
-		this.read = read;
-		if (read) {
-			this.readMsg = 'Has been read';
-		} else {
-			this.readMsg = 'Has not been read';
-		}
-	}
-
-	get title() {
-		return this._title;
-	}
-
-	set title(value) {
-		this._title = value;
-	}
-
-	get author() {
-		return this._author;
-	}
-
-	set author(value) {
-		this._author = value;
-	}
-
-	get pages() {
-		return this._pages;
-	}
-
-	set pages(value) {
-		this._pages = value;
-	}
-
-	get read() {
-		return this._read;
-	}
-
-	set read(value) {
-		this._read = value;
-	}
-
-	info = () => {
-		console.log(`${this.title} by ${this.author}, 
-		${this.pages} pages, ${this.readMsg}`);
-	};
+    constructor(title, author, pages, read) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
+        this.readMsg = read ? 'Has been read' : 'Has not been read';
+    }
 }
 
 class Library {
-	constructor(bookList) {
-		this.bookList = bookList;
-		this.libraryContainer = document.querySelector('.libraryContainer');
-		this.addCard = document.createElement('div');
-		this.addCard.addEventListener('click', this.handleAddCardClick.bind(this));
-		this.addIcon = document.createElement('img');
-		this.addIcon.src = './svgs/plus.svg';
-		this.addIcon.id = 'icon';
-		this.addCard.id = 'addCard';
-		this.addCard.appendChild(this.addIcon);
-		
-	}
+    constructor(bookList = []) {
+        this.bookList = bookList;
+        this.libraryContainer = document.querySelector('.libraryContainer');
+        this.addCard = this.createAddCard();
+        this.libraryContainer.appendChild(this.addCard);
+		console.log(this.libraryContainer);
+        this.initEvents();
+    }
 
+    createElement(tag, classNames = []) {
+        const element = document.createElement(tag);
+        classNames.forEach(className => element.classList.add(className));
+        return element;
+    }
 
-	checkRead() {
-		let currRead = document.getElementById('read-' + this.id);
-		if (currCheckBox.checked) {
-			this.bookList[this.id].setRead(true);
-			currRead.textContent = '';
-		} else {
-			this.bookList[this.id].setRead(false);
-		}
-	}
+    createAddCard() {
+        const addCard = this.createElement('div', ['addCard']);
+        const addIcon = this.createElement('img', ['icon']);
+        addIcon.src = './svgs/plus.svg';
+        addCard.appendChild(addIcon);
+        addCard.addEventListener('click', this.handleAddCardClick.bind(this));
+        return addCard;
+    }
 
-	// when clicked create a new book form within a card
-	handleAddCardClick() {
-		const createFormCard = () => {
-			let formCard = document.createElement('div');
-			formCard.className = 'form card';
+    handleAddCardClick() {
+        const existingForm = document.getElementById('form');
+        if (!existingForm) {
+            this.libraryContainer.removeChild(this.addCard);
+            const formCard = this.createFormCard();
+            this.libraryContainer.appendChild(formCard);
+        }
+    }
 
-			//create form
-			let form = document.createElement('form');
-			form.id = 'form';
-			
-			//title
-			let titleLabel = document.createElement('label');
-			titleLabel.setAttribute('for', 'title');
+    createFormCard() {
+        const formCard = this.createElement('div', ['form', 'card']);
+        const form = this.createElement('form', ['form']);
+        form.id = 'form';
 
-			let titleSpan = document.createElement('span');
-			titleSpan.textContent = 'Title';
-			titleLabel.appendChild(titleSpan);
+        const fields = [
+            { label: 'Title', id: 'title', type: 'text' },
+            { label: 'Author', id: 'author', type: 'text' },
+            { label: 'Number of pages', id: 'pages', type: 'text' },
+            { label: 'Has been read? (y/n)', id: 'read', type: 'text' }
+        ];
 
-			let titleRequired = document.createElement('span');
-			titleRequired.setAttribute('aria-label', 'required');
-			titleRequired.textContent = '*';
-			titleLabel.appendChild(titleRequired);
+        fields.forEach(({ label, id, type }) => {
+            const div = this.createElement('div');
+            const labelElement = this.createElement('label');
+            labelElement.setAttribute('for', id);
+            labelElement.textContent = `${label} *`;
+            const input = this.createElement('input');
+            input.type = type;
+            input.id = id;
+            div.appendChild(labelElement);
+            div.appendChild(input);
+            form.appendChild(div);
+        });
 
-			let titleDiv = document.createElement('div');
-			titleDiv.appendChild(titleLabel);
+        const saveBtn = this.createElement('button', ['addLibBtn']);
+        saveBtn.type = 'submit';
+        saveBtn.textContent = 'Save';
+        form.appendChild(saveBtn);
 
-			let titleInput = document.createElement('input');
-			titleInput.setAttribute('type', 'text');
-			titleInput.id = 'title';
-			titleDiv.appendChild(titleInput);
+        const cancelBtn = this.createElement('button', ['cancelLibBtn']);
+        cancelBtn.type = 'button';
+        cancelBtn.textContent = 'Cancel';
+        form.appendChild(cancelBtn);
 
-			form.appendChild(titleDiv);
+        formCard.appendChild(form);
+        return formCard;
+    }
 
-			// author
-			let authorLabel = document.createElement('label');
-			authorLabel.setAttribute('for', 'author');
+    saveBook(event) {
+        event.preventDefault();
+        const form = document.getElementById('form');
+        const newBook = new Book(
+            form.title.value,
+            form.author.value,
+            form.pages.value,
+            form.read.value.toLowerCase() === 'y'
+        );
+        this.bookList.push(newBook);
+        this.updateBookCards(newBook, this.bookList.length - 1);
+        this.libraryContainer.replaceChild(this.addCard, form.closest('.card'));
+    }
 
-			let authorSpan = document.createElement('span');
-			authorSpan.textContent = 'Author';
-			authorLabel.appendChild(authorSpan);
+    cancelForm() {
+        const formCard = document.querySelector('.form.card');
+        this.libraryContainer.replaceChild(this.addCard, formCard);
+    }
 
-			let authorRequired = document.createElement('span');
-			authorRequired.setAttribute('aria-label', 'required');
-			authorRequired.textContent = '*';
-			authorLabel.appendChild(authorRequired);
+    removeBook(event) {
+        const bookCard = event.target.closest('.book.card');
+        const id = parseInt(bookCard.id.split('-')[1]);
+        this.bookList.splice(id, 1);
+        bookCard.remove();
+    }
 
-			let authorDiv = document.createElement('div');
-			authorDiv.appendChild(authorLabel);
+    toggleReadStatus(event) {
+        const checkbox = event.target;
+        const id = parseInt(checkbox.id.split('-')[1]);
+        const book = this.bookList[id];
+        book.read = checkbox.checked;
+        document.getElementById(`read-${id}`).textContent = book.read ? 'Has been read' : 'Has not been read';
+    }
 
-			let authorInput = document.createElement('input');
-			authorInput.setAttribute('type', 'text');
-			authorInput.id = 'author';
-			authorDiv.appendChild(authorInput);
+    createCardItem(name, id, className) {
+        const div = this.createElement('div', [`${className}`, 'info']);
+        div.textContent = name;
+        div.id = id;
+        return div;
+    }
 
-			form.appendChild(authorDiv);
-			
-			// pages
-			let pagesLabel = document.createElement('label');
-			pagesLabel.setAttribute('for', 'pages');
+    updateBookCards(book, id) {
+        const closeIcon = this.createElement('img', ['closeIcon']);
+        closeIcon.src = './svgs/close.svg';
 
-			let pagesSpan = document.createElement('span');
-			pagesSpan.textContent = 'Number of pages';
-			pagesLabel.appendChild(pagesSpan);
+        const bookInfo = this.createElement('div', ['bookInfo']);
+        bookInfo.appendChild(this.createCardItem(book.author, `author-${id}`, 'author'));
+        bookInfo.appendChild(this.createCardItem(`${book.pages} pages`, `pages-${id}`, 'pages'));
+        bookInfo.appendChild(this.createCardItem(book.readMsg, `read-${id}`, 'read'));
 
-			let pagesRequired = document.createElement('span');
-			pagesRequired.setAttribute('aria-label', 'required');
-			pagesRequired.textContent = '*';
-			pagesLabel.appendChild(pagesRequired);
+        const readSwitch = this.createElement('label', ['switch']);
+        const inputCheckBox = this.createElement('input');
+        inputCheckBox.type = 'checkbox';
+        inputCheckBox.id = `checkbox-${id}`;
+        inputCheckBox.checked = book.read;
+        const switchBtn = this.createElement('div', ['switch-btn']);
+        readSwitch.appendChild(inputCheckBox);
+        readSwitch.appendChild(switchBtn);
+        bookInfo.appendChild(readSwitch);
 
-			let pagesDiv = document.createElement('div');
-			pagesDiv.appendChild(pagesLabel);
+        const bookCard = this.createElement('div', ['book', 'card']);
+        bookCard.id = `book-${id}`;
+        bookCard.appendChild(closeIcon);
+        bookCard.appendChild(this.createCardItem(book.title, `title-${id}`, 'title'));
+        bookCard.appendChild(bookInfo);
 
-			let pagesInput = document.createElement('input');
-			pagesInput.setAttribute('type', 'text');
-			pagesInput.id = 'pages';
-			pagesDiv.appendChild(pagesInput);
+        this.libraryContainer.appendChild(bookCard);
+    }
 
-			form.appendChild(pagesDiv);
+    initEvents() {
+        this.libraryContainer.addEventListener('click', (event) => {
+            const addCard = event.target.closest('.addCard');
+            const addLibBtn = event.target.closest('.addLibBtn');
+            const cancelLibBtn = event.target.closest('.cancelLibBtn');
+            const closeIcon = event.target.closest('.closeIcon');
+            const switchCheckbox = event.target.closest('.switch input[type="checkbox"]');
 
-			// read
-			let readLabel = document.createElement('label');
-			readLabel.setAttribute('for', 'read');
-
-			let readSpan = document.createElement('span');
-			readSpan.textContent = 'Has been read? (y/n)';
-			readLabel.appendChild(readSpan);
-
-			let readRequired = document.createElement('span');
-			readRequired.setAttribute('aria-label', 'required');
-			readRequired.textContent = '*';
-			readLabel.appendChild(readRequired);
-
-			let readDiv = document.createElement('div');
-			readDiv.appendChild(readLabel);
-
-			let readInput = document.createElement('input');
-			readInput.setAttribute('type', 'text');
-			readInput.id = 'read';
-			readDiv.appendChild(readInput);
-			
-			form.appendChild(readDiv);
-
-			//save button
-			let saveBtn = document.createElement('button');
-			saveBtn.setAttribute('type', 'submit');
-			saveBtn.className = 'addLibBtn';
-			saveBtn.textContent = 'save';
-
-			saveBtn.addEventListener('click', () => {
-				this.addBookToLibrary();
-				const libraryContainer = document.querySelector('.libraryContainer');
-				libraryContainer.removeChild(formCard);
-			});
-
-			form.appendChild(saveBtn);
-
-			formCard.appendChild(form);
-
-			return formCard;
-		};
-		// check if a form hasn't been saved, if so user must complete it before adding a new book
-		if (!document.getElementById('form')) {
-			document.getElementById('addCard').remove();
-			let formCard = createFormCard();
-			this.libraryContainer.appendChild(formCard);
-		}
-	};
-
-	addToBookList(book) {
-		this.bookList.push(book);
-		this.book = this.bookList[this.bookList.length-1];
-		this.id = this.bookList.length-1;
-	}
-
-	addBookToLibrary() {
-		// this.preventDefault();
-		const title = document.querySelector('#title');
-		const author = document.querySelector('#author');
-		const pages = document.querySelector('#pages');
-		const read = document.querySelector('#read');
-		this.addToBookList(new Book(title.value, author.value, pages.value, read.value));
-		this.updateBookCards(this.bookList[this.bookList.length-1], this.bookList.length-1);
-	}
-
-	createCardItem(name, id, className) {
-		let div = document.createElement('div');
-		div.textContent = name;
-		div.id= id;
-		div.className = className;
-		div.classList.add('info');
-		return div;
-	}
-
-	updateBookCards() {
-		// close icon
-		let closeIcon = document.createElement('img');
-		closeIcon.src = './svgs/close.svg';
-		closeIcon.className = 'closeIcon';
-
-		// book information
-		let bookInfo = document.createElement('div');
-		bookInfo.className = 'bookInfo';
-
-		bookInfo.appendChild(this.createCardItem(this.book.author, 'author-' + this.id, 'author'));
-		bookInfo.appendChild(this.createCardItem(this.book.pages + ' pages', 'pages-'+this.id, 'pages'));
-		bookInfo.appendChild(this.createCardItem(this.book.readMsg, 'read-'+this.id, 'read'));
-
-		// checkbox to check if book has been read
-		let readSwitch = document.createElement('label');
-		let inputCheckBox = document.createElement('input');
-		inputCheckBox.type = 'checkbox';
-		inputCheckBox.id = 'checkbox-' + this.id;
-
-		let switchBtn = document.createElement('div');
-		switchBtn.className = 'switch-btn';
-
-		readSwitch.className = 'switch';
-
-		// tick checkbox if book has been read
-		if (this.book.read) {
-			inputCheckBox.checked = true;
-		} 
-
-		readSwitch.appendChild(inputCheckBox);
-		readSwitch.appendChild(switchBtn);
-
-		bookInfo.appendChild(readSwitch);
-
-		// book card
-		let bookCard = document.createElement('div');
-
-		bookCard.className = 'book card';
-		bookCard.id = 'book-'+ this.id;
-		bookCard.appendChild(closeIcon);
-		bookCard.appendChild(this.createCardItem(this.book.title, 'title-' + this.id, 'title'));
-		bookCard.appendChild(bookInfo);
-		
-		// button to add a new book
-
-		this.libraryContainer.appendChild(bookCard);
-
-		// remove last add button
-		if (document.getElementById('addCard')) {
-			document.getElementById('addCard').remove();
-		}
-
-		// add a new add button
-		this.libraryContainer.appendChild(this.addCard);
-
-		closeIcon.addEventListener('click', () => {
-			myLibrary.splice(closeIcon.parentNode.id, 1);
-			closeIcon.parentNode.remove();
-		});
-
-		inputCheckBox.addEventListener('change', function() {
-			let readMsg = document.getElementById('read-' + id);
-			if(this.checked) {
-				book.read = true;
-				readMsg.textContent = 'Has been read';
-			} else {
-				book.read = false;
-				readMsg.textContent = 'Has not been read';
-			}
-		});
-	}
-
-	
+            if (addCard) this.handleAddCardClick();
+            if (addLibBtn) this.saveBook(event);
+            if (cancelLibBtn) this.cancelForm();
+            if (closeIcon) this.removeBook(event);
+            if (switchCheckbox) this.toggleReadStatus(event);
+        });
+    }
 }
+
 const myLibrary = new Library([]);
-const theHobbit = new Book('The Hobbit', 'J.R.R. Tolkien', '295', false);
-
-myLibrary.addToBookList(theHobbit);
-myLibrary.updateBookCards(myLibrary.bookList[myLibrary.bookList.length-1], myLibrary.bookList.length-1);
-
-let lastBookId = myLibrary.length-1;
-let lastBook = document.getElementById(lastBookId);
-
-
-
-
-
-

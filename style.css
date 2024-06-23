@@ -43,14 +43,14 @@ header {
 
 }
 
-#addCard {
+.addCard {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	height: 200px;
 	width: 150px;
 	padding: 10px;
-	
+	order: 1;
 }
 
 .card {
@@ -127,10 +127,6 @@ input[type=checkbox]:checked + .switch-btn:before {
 
 input[type=checkbox]:checked + .switch-btn {
 	background: rgb(55, 163, 55);
-}
-
-.form.card {
-	height:
 }
 
 li {
