@@ -10,7 +10,7 @@ class Book {
 
 class Library {
     constructor(bookList = []) {
-        this.bookList = bookList;
+    	this.bookList = bookList;
         this.libraryContainer = document.querySelector('.libraryContainer');
         this.addCard = this.createAddCard();
         this.libraryContainer.appendChild(this.addCard);
@@ -167,4 +167,4 @@ class Library {
     }
 }
 
-const myLibrary = new Library([]);
+new Library([]);
